@@ -102,8 +102,14 @@ window.addEventListener('DOMContentLoaded', function () {
         popup.style.display = 'block';
       });
     });
+    popupBtn.forEach(elem => {
+      elem.addEventListener('click', () => anim = requestAnimationFrame(popupAnim));
+    });
+    popUpClose.addEventListener('click', () => anim = requestAnimationFrame(popupAnim));
+
 
     popupClose.addEventListener('click', () => popup.style.display = 'none');
   };
   toglePopUp();
 });
+
