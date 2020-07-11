@@ -2,9 +2,14 @@
   'use strict';
 
   window.addEventListener('DOMContentLoaded', () => {
-    const menu = document.querySelector('menu');
-        // menuItem = menu.querySelectorAll('ul>li'),
-        // startScrollBtn = document.querySelector('.start-scroll-btn');
+    const menu = document.querySelector('menu'),
+            menuItem = menu.querySelectorAll('ul>li'),
+            startScrollBtn = document.querySelector('.start-scroll-btn'),
+            serviceBlock = document.querySelector('#service-block'),
+            portfolio = document.querySelector('#portfolio'),
+            calc = document.querySelector('#calc'),
+            command = document.querySelector('#command'),
+            connect = document.querySelector('#connect');
 
     //таймер
     const countTimer = (deadline) => {
@@ -37,7 +42,7 @@
         };
         updateClock();
     };
-    setInterval(countTimer, 1000, '11 july 2020');
+    setInterval(countTimer, 1000, '15 july 2020');
 
     //меню
     const toggleMenu = () => {
@@ -140,37 +145,36 @@
     //     });
     // };
     // scrollPage();
+
     //табы
     const tabs = () => {
-        const serviceHeader = document.querySelector('.service-header'),
-            serviceHeaderTab = serviceHeader.querySelectorAll('.service-header-tab'),
-            serviceTab = document.querySelectorAll('.service-tab');
+        const tabHeader = document.querySelector('.service-header'),
+            tab = tabHeader.querySelectorAll('.service-header-tab'),
+            tabContent = document.querySelectorAll('.service-tab');
 
-        const toogleServiceTab = (index) => {
-            for(let i = 0; i < serviceTab.length; i++) {
-                if(index === i) {
-                    serviceHeaderTab[i].classList.add('active');
-                    serviceTab[i].classList.remove('d-none');
+        const toggleTabContent = (index) => {
+            for(let i = 0; i < tabContent.length; i++){
+                if(index === i){
+                    tab[i].classList.add('active');
+                    tabContent[i].classList.remove('d-none');
                 } else {
-                    serviceHeaderTab[i].classList.remove('active');
-                    serviceTab[i].classList.add('d-none');
+                    tab[i].classList.remove('active');
+                    tabContent[i].classList.add('d-none');
                 }
             }
         };
-
-        serviceHeader.addEventListener('click', (event) => {
-            let target = event.target;
-            
-            target = target.closest('.service-header-tab');
-            if(target) {
-                serviceHeaderTab.forEach( (item ,i) => {
-                    if(item === target) {
-                        toogleServiceTab(i);
+            tabHeader.addEventListener('click', (event) => {
+                let target = event.target;
+                    target = target.closest('.service-header-tab');
+                    if(target){
+                        tab.forEach((item, i) => {
+                            if(item === target){
+                               toggleTabContent(i); 
+                            }
+                        });
                     }
-                });
-            }
-        });
-    };
+            });
+    }
     tabs();
 
 
