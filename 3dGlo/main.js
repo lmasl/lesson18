@@ -269,5 +269,29 @@
   };
 
   slider();
+  //team
+  const commandPhoto = document.querySelectorAll('.command__photo');
+   
+  commandPhoto.forEach((elem) => {
+      let src = elem.src;
 
+      elem.addEventListener('mouseenter', (event) => {
+         let srcNew = event.target.dataset.img;
+         event.target.src = srcNew
+       })
+      
+       elem.addEventListener('mouseleave', (event) => {
+          event.target.src = src;
+          console.log(event.target.src);
+        })
   });
+
+  //calculator
+  let inputsNumber = document.querySelectorAll(".calc-item");
+  inputsNumber.forEach((e) => {
+      e.addEventListener('input', () => {
+      e.value = e.value.replace(/[^\d.]/g, '');
+      })
+  })
+});
+
