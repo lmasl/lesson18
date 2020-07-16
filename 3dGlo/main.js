@@ -301,8 +301,7 @@
           countValue = 1,
           dayValue = 1;
           const typeValue = calcType.options[calcType.selectedIndex].value,
-                squareValue = +calcSquare.value;
-         
+                squareValue = +calcSquare.value;  
           if(calcCount.value > 1) {
               countValue += (calcCount.value - 1) / 10;
           }
@@ -316,10 +315,10 @@
           console.log(dayValue)
 
           if(typeValue && squareValue) {
-              total = price * typeValue * squareValue * countValue * dayValue;
-          } 
-          totalValue.textContent = total;
-      };
+            total = Math.round(price * typeValue * squareValue * countValue * dayValue);
+        } 
+        totalValue.textContent = total;
+    };
 
       calcBlock.addEventListener('change', (event) => {
           const target = event.target;
@@ -334,6 +333,91 @@
   }
 
   calc(100);
+
+// send-ajax-form
+const sendForm = (form) => {
+  const erorMessage = 'Что-то пошло не так...',
+    laodMessage = 'Загрузка...',
+    successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
+
+  const statusMessage = document.createElement('div');
+  statusMessage.style.cssText = 'font-size: 2rem;';
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    form.appendChild(statusMessage);
+    statusMessage.textContent = laodMessage;
+
+    const formData = new FormData(form);
+    let body = {};
+
+    for (let val of formData.entries()) {
+      body[val[0]] = val[1];
+    }
+
+
+    postData(body, () => {
+      statusMessage.textContent = successMessage;
+      clearForm();
+    }, (error) => {
+      statusMessage.textContent = erorMessage;
+      console.log('error: ', error);
+    });
+  });
+
+  const postData = (body, outputData, errorData) => {
+    const request = new XMLHttpRequest();
+
+    request.addEventListener('readystatechange', () => {
+      if (request.readyState !== 4) {
+        return;
+      }
+      request.status === 200 ? outputData() : errorData(request.status);
+    });
+
+    request.open('POST', 'server.php');
+    //request.setRequestHeader('Content-Type', 'multipart/form-data');
+    request.setRequestHeader('Content-Type', 'application/json');
+
+
+    request.send(JSON.stringify(body));
+    //request.send(formData);
+  };
+
+  const clearForm = () => {
+    for (const el of form.elements) {
+      if (el.tagName.toLowerCase() !== 'button' && el.type !== 'button') {
+        el.value = '';
+      }
+    }
+  };
+
+};
+sendForm(document.getElementById('form1'));
+sendForm(document.getElementById('form2'));
+sendForm(document.getElementById('form3'));
+
+// валидация формы
+let formPhone = document.querySelectorAll('.form-phone');
+formPhone.forEach((e) => {
+    e.addEventListener('input', () => {
+    e.value = e.value.replace(/[^0-9+]/, '');
+    })
+})
+
+let formName = document.querySelectorAll('.form-name');
+formName.forEach((e) => {
+    e.addEventListener('input', () => {
+    e.value = e.value.replace(/[^А-Яа-яЁё ]/, '');
+    })
+});
+let formMessage = document.querySelector('#form2-message')
+formMessage.addEventListener('input', () => {
+    
+    formMessage.value = formMessage.value.replace(/[^А-Яа-яЁё ]/, '');
+ })
+
+  
 
 });
 
