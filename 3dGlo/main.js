@@ -35,7 +35,7 @@
         };
         updateClock();
     };
-    setInterval(countTimer, 1000, '15 july 2020');
+    setInterval(countTimer, 1000, '25 july 2020');
 
     //menu
     const toggleMenu = () => {
@@ -335,67 +335,66 @@
   calc(100);
 
 // send-ajax-form
+let formHeader = document.getElementById('form1'),
+formFooter = document.getElementById('form2'),
+formModal = document.getElementById('form3');
+
 const sendForm = (form) => {
-  const erorMessage = 'Что-то пошло не так...',
-    laodMessage = 'Загрузка...',
-    successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
-
-  const statusMessage = document.createElement('div');
+ const errorMessage = "Ошибка",
+  loadMessage = "Загрузка...",
+  successMessage = "Данные успешно отправлены!",
+ 
+  statusMessage = document.createElement('div');
   statusMessage.style.cssText = 'font-size: 2rem;';
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    form.appendChild(statusMessage);
-    statusMessage.textContent = laodMessage;
-
-    const formData = new FormData(form);
-    let body = {};
-
-    for (let val of formData.entries()) {
-      body[val[0]] = val[1];
-    }
-
-
-    postData(body, () => {
-      statusMessage.textContent = successMessage;
-      clearForm();
-    }, (error) => {
-      statusMessage.textContent = erorMessage;
-      console.log('error: ', error);
-    });
-  });
-
-  const postData = (body, outputData, errorData) => {
-    const request = new XMLHttpRequest();
-
-    request.addEventListener('readystatechange', () => {
-      if (request.readyState !== 4) {
-        return;
+  statusMessage.classList.add('form-text');
+  
+  form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      form.appendChild(statusMessage);
+      const formData = new FormData(form);
+      let body = {};
+      
+      for(let val of formData.entries()){
+          body[val[0]] = val[1];
       }
-      request.status === 200 ? outputData() : errorData(request.status);
-    });
+      statusMessage.textContent = loadMessage;
+     
+      postData(body).then(() => {
+             statusMessage.textContent = successMessage;
+         })
+         .catch ((error) => {
+             statusMessage.textContent = errorMessage;
+         })
+ });
 
-    request.open('POST', 'server.php');
-    //request.setRequestHeader('Content-Type', 'multipart/form-data');
-    request.setRequestHeader('Content-Type', 'application/json');
-
-
-    request.send(JSON.stringify(body));
-    //request.send(formData);
-  };
-
-  const clearForm = () => {
-    for (const el of form.elements) {
-      if (el.tagName.toLowerCase() !== 'button' && el.type !== 'button') {
-        el.value = '';
-      }
-    }
-  };
-
+ const postData = (body) => {
+     return new Promise ((resolve, reject) => {
+         const request = new XMLHttpRequest();
+         request.addEventListener('readystatechange', () => {
+            if(request.readyState !== 4) {
+                return;
+            }
+            if (request.status === 200){
+               resolve();
+            } else {
+                reject(request.statusText);
+            }
+         });
+         request.open('POST', './server.php');
+         request.setRequestHeader('Conent-Type', 'application/json');
+         
+         request.send(JSON.stringify(body));
+         console.log(body);
+         const inputs = document.querySelectorAll('input');
+         inputs.forEach((elem) => elem.value = '');
+     });
+ };
+ 
 };
-sendForm(document.getElementById('form1'));
-sendForm(document.getElementById('form2'));
-sendForm(document.getElementById('form3'));
+sendForm(formHeader);
+sendForm(formFooter);
+sendForm(formModal);
+
 
 // валидация формы
 let formPhone = document.querySelectorAll('.form-phone');
