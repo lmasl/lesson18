@@ -352,44 +352,31 @@ const sendForm = (form) => {
       event.preventDefault();
       form.appendChild(statusMessage);
       const formData = new FormData(form);
-      let body = {};
       
-      for(let val of formData.entries()){
-          body[val[0]] = val[1];
-      }
       statusMessage.textContent = loadMessage;
      
-      postData(body).then(() => {
+      postData(formData)
+      .then((response) => {
+          if (response.status !== 200) {
+              throw new Error('status network not 200');
+          }
              statusMessage.textContent = successMessage;
          })
          .catch ((error) => {
              statusMessage.textContent = errorMessage;
+             console.log(error)
          })
  });
 
- const postData = (body) => {
-     return new Promise ((resolve, reject) => {
-         const request = new XMLHttpRequest();
-         request.addEventListener('readystatechange', () => {
-            if(request.readyState !== 4) {
-                return;
-            }
-            if (request.status === 200){
-               resolve();
-            } else {
-                reject(request.statusText);
-            }
-         });
-         request.open('POST', './server.php');
-         request.setRequestHeader('Conent-Type', 'application/json');
-         
-         request.send(JSON.stringify(body));
-         console.log(body);
-         const inputs = document.querySelectorAll('input');
-         inputs.forEach((elem) => elem.value = '');
+ const postData = (formData) => {
+     return fetch('./server.php', {
+         method: 'POST',
+         headers: {
+             'Conent-Type': 'application/json'
+         },
+         body: formData
      });
- };
- 
+ };  
 };
 sendForm(formHeader);
 sendForm(formFooter);
